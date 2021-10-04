@@ -2,14 +2,24 @@ import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Formik } from "formik";
 import { Form, Input, Button, Select, Divider } from "antd";
+import { generate, presetDarkPalettes } from "@ant-design/colors";
+import { SwatchesPicker } from "react-color";
 
 function addPost() {
+  const [color, setColor] = useState("#fff");
+  const [showPicker, setShowPicker] = useState(false);
+  const { option } = Select;
+  console.log(color);
+
+  function onSelectChange(value) {}
+
   return (
     <>
       <Formik
-        initialValues={{ email: "", url: "", message: "", id: "" }}
+        initialValues={{ email: "", url: "", message: "", id: "", color: "" }}
         onSubmit={(values, { resetForm }) => {
           let postArr = localStorage.getItem("words");
+          values.color = color;
 
           postArr = JSON.parse(postArr);
           if (postArr) {
@@ -26,8 +36,9 @@ function addPost() {
             localStorage.setItem("words", arr);
             values.id = Math.floor(Math.random() * 100);
           }
-          console.log(values);
+          console.log("values", values.color);
           resetForm();
+          setShowPicker("");
         }}
       >
         {({
@@ -39,7 +50,11 @@ function addPost() {
           handleSubmit,
           isSubmitting,
         }) => (
-          <Form>
+          <Form
+            style={{
+              backgroundColor: color,
+            }}
+          >
             <Form.Item
               label="URL"
               rules={[
@@ -73,6 +88,20 @@ function addPost() {
               />
             </Form.Item>
 
+            <Form.Item label="Color">
+              <Button
+                onClick={() => setShowPicker((showPicker) => !showPicker)}
+              >
+                {showPicker ? "close" : "Show"}
+              </Button>
+              {showPicker && (
+                <SwatchesPicker
+                  name="color"
+                  value={values.color}
+                  onChange={(updateColor) => setColor(updateColor.hex)}
+                />
+              )}
+            </Form.Item>
             <Form.Item label="Button">
               <Button onClick={handleSubmit}>Button</Button>
             </Form.Item>

@@ -103,7 +103,12 @@ function addPost() {
               )}
             </Form.Item>
             <Form.Item label="Button">
-              <Button onClick={handleSubmit}>Button</Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={!(values.email && values.message && values.url)}
+              >
+                Button
+              </Button>
             </Form.Item>
           </Form>
         )}

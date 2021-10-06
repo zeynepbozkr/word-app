@@ -1,11 +1,11 @@
 import React from "react";
+import ListPost from "../components/listPost";
 
-function listPage(props) {
-  console.log(props, "ada");
-
+function listPage() {
   return (
     <div>
-      <p>{props}dghf</p>
+      LİST
+      <ListPost></ListPost>
     </div>
   );
 }

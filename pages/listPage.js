@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Link } from "react";
 import ListPost from "../components/listPost";
 
 function listPage() {

@@ -1,23 +1,52 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Formik } from "formik";
-import { Form, Input, Button, Select, Divider } from "antd";
-import { generate, presetDarkPalettes } from "@ant-design/colors";
+import { Form, Input, Button, Select, Divider, List } from "antd";
 import { SwatchesPicker } from "react-color";
 import { PlusOutlined } from "@ant-design/icons";
-import listPost from "./listPost";
+import { blue } from "@ant-design/colors";
 
 function addPost() {
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
   const { Option } = Select;
   const [allWord, setAllWord] = useState([]);
   const [word, setWord] = useState();
+  const [url, setUrl] = useState();
+  const [allUrl, setAllUrl] = useState([]);
+  const [colorPalet, setColorPalet] = useState([
+    "#B98B73 ",
+    "#CB997E",
+    "#DDBEA9",
+    "#FFE8D6",
+    "#D4C7B0 ",
+    "#B7B7A4",
+    "#A5A58D",
+    "#6B705C",
+    "#3F4238",
+  ]);
 
-  // const onclickButton = () => {
-  //   let arr2 = JSON.parse(localStorage.getItem("words"));
-  //   setLocalColor(arr2);
-  //   //localcolor a renk değerleri eklenecek random olarak çekilecek ve girilen kelimelere style olarak bu renk değerleir verilecek
+  // const addColor = () => {
+  //   let arr5 = blue;
+  //   setColorPalet(arr5);
+  // };
+  // const ReplaceUrl = (event) => {
+  //   console.log(event.target.value);
+
+  //   return event.target.value
+  //     .replace("Ğ", "g")
+  //     .replace("Ü", "u")
+  //     .replace("Ş", "s")
+  //     .replace("I", "i")
+  //     .replace("İ", "i")
+  //     .replace("Ö", "o")
+  //     .replace("Ç", "c")
+  //     .replace("ğ", "g")
+  //     .replace("ü", "u")
+  //     .replace("ş", "s")
+  //     .replace("ı", "i")
+  //     .replace("ö", "o")
+  //     .replace("ç", "c");
   // };
 
   const addItemFunction = () => {
@@ -25,6 +54,22 @@ function addPost() {
     newArr.push(word);
     setAllWord(newArr);
     setWord("");
+  };
+
+  const colorSelect = (item) => {
+    const newarr2 = [...color];
+
+    const index = newarr2.indexOf(item);
+    console.log(index);
+
+    if (index !== -1) {
+      newarr2.splice(index, 1);
+    } else {
+      newarr2.push(item);
+    }
+    setColor(newarr2);
+
+    console.log(color);
   };
 
   const onNameChange = (event) => {
@@ -35,17 +80,16 @@ function addPost() {
     <>
       <Formik
         initialValues={{
-          words: "",
+          words: [],
           email: "",
           url: "",
           message: "",
           id: "",
-          color: "",
-          uzanti: "",
+          selectedColor: "",
         }}
         onSubmit={(values, { resetForm }) => {
           let postArr = localStorage.getItem("words");
-          values.color = color;
+          values.selectedColor = color;
 
           postArr = JSON.parse(postArr);
           if (postArr) {
@@ -146,7 +190,6 @@ function addPost() {
                 name="email"
               />
             </Form.Item>
-
             <Form.Item label="Message">
               <Input.TextArea
                 name="message"
@@ -155,44 +198,19 @@ function addPost() {
               />
             </Form.Item>
 
-            {/* <Form.Item label="Color">
-              <Button
-                onClick={() => setShowPicker((showPicker) => !showPicker)}
-              >
-                {showPicker ? "close" : "Show"}
-              </Button>
-              {showPicker && (
-                <SwatchesPicker
-                  name="color"
-                  value={values.color}
-                  onChange={(updateColor) => setColor(updateColor.hex)}
-                />
-              )}
-            </Form.Item> */}
-
-            <Form.Item>
-              {allWord.map((item, index) => {
-                console.log(item, "IIII");
+            <List
+              size="small"
+              dataSource={colorPalet}
+              renderItem={(item) => {
                 return (
-                  <>
-                    {item}
-                    <SwatchesPicker
-                      name="color"
-                      value={values.color}
-                      onChange={(updateColor) => setColor(updateColor.hex)}
-                    />
-                  </>
+                  <a href="#" onClick={() => colorSelect(item)}>
+                    <List.Item style={{ backgroundColor: item }}>
+                      {item}
+                    </List.Item>
+                  </a>
                 );
-              })}
-            </Form.Item>
-
-            <Form.Item label="Uzantı" rules={[{ required: true }]}>
-              <Input
-                value={values.uzanti}
-                onChange={handleChange}
-                name="uzanti"
-              />
-            </Form.Item>
+              }}
+            />
             <Form.Item label="Button">
               <Button
                 onClick={handleSubmit}
@@ -209,3 +227,77 @@ function addPost() {
 }
 
 export default addPost;
+{
+  /* <Form.Item label="Color">
+              <Button
+                onClick={() => setShowPicker((showPicker) => !showPicker)}
+              >
+                {showPicker ? "close" : "Show"}
+              </Button>
+              {showPicker && (
+                <SwatchesPicker
+                  name="color"
+                  value={values.color}
+                  onChange={(updateColor) => setColor(updateColor.hex)}
+                />
+              )}
+            </Form.Item> */
+}
+{
+  /* <Form.Item>
+              {allWord.map((item, index) => {
+                return (
+                  <>
+                    {item}
+                    <SwatchesPicker
+                      name="color"
+                      value={values.color}
+                      onChange={(updateColor) => setColor(updateColor.hex)}
+                    />
+                  </>
+                );
+              })}
+            </Form.Item> */
+}
+
+{
+  /* <Form.Item label="color">
+              {allWord?.map((color) => {
+                return (
+                  <div>
+                    <Button
+                      style={{ backgroundColor: colorPalet[1] }}
+                      onClick={addColor}
+                    >
+                      Button
+                    </Button>
+                  </div>
+                );
+              })}
+            </Form.Item> */
+}
+
+{
+  /* <List size="large">
+              <a href="#">
+                <List.Item
+                  style={{ backgroundColor: colorPalet[0] }}
+                ></List.Item>
+              </a>
+              <a href="#">
+                <List.Item
+                  style={{ backgroundColor: colorPalet[1] }}
+                ></List.Item>
+              </a>
+              <a href="#">
+                <List.Item
+                  style={{ backgroundColor: colorPalet[2] }}
+                ></List.Item>
+              </a>
+              <a href="#">
+                <List.Item
+                  style={{ backgroundColor: colorPalet[3] }}
+                ></List.Item>
+              </a>
+            </List> */
+}

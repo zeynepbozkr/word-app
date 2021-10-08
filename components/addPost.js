@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Formik } from "formik";
-import { Form, Input, Button, Select, Divider, List } from "antd";
+import { Form, Input, Button, Select, Divider, List, Link } from "antd";
 import { SwatchesPicker } from "react-color";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, CheckOutlined } from "@ant-design/icons";
 import { blue } from "@ant-design/colors";
 
 function addPost() {
   const [color, setColor] = useState([]);
-  const [showPicker, setShowPicker] = useState(false);
   const { Option } = Select;
   const [allWord, setAllWord] = useState([]);
   const [word, setWord] = useState();
-  const [url, setUrl] = useState();
+  const [urlSize, setUrlSize] = useState("");
   const [allUrl, setAllUrl] = useState([]);
   const [colorPalet, setColorPalet] = useState([
     "#B98B73 ",
@@ -26,28 +25,13 @@ function addPost() {
     "#3F4238",
   ]);
 
-  // const addColor = () => {
-  //   let arr5 = blue;
-  //   setColorPalet(arr5);
-  // };
-  // const ReplaceUrl = (event) => {
-  //   console.log(event.target.value);
-
-  //   return event.target.value
-  //     .replace("Ğ", "g")
-  //     .replace("Ü", "u")
-  //     .replace("Ş", "s")
-  //     .replace("I", "i")
-  //     .replace("İ", "i")
-  //     .replace("Ö", "o")
-  //     .replace("Ç", "c")
-  //     .replace("ğ", "g")
-  //     .replace("ü", "u")
-  //     .replace("ş", "s")
-  //     .replace("ı", "i")
-  //     .replace("ö", "o")
-  //     .replace("ç", "c");
-  // };
+  const addUrl = () => {
+    for (let i = 0; i <= 9; i += 0.1) {
+      const arr6 = [];
+      arr.push(i);
+    }
+    setUrlSize(arr6);
+  };
 
   const addItemFunction = () => {
     const newArr = [...allWord];
@@ -68,12 +52,11 @@ function addPost() {
       newarr2.push(item);
     }
     setColor(newarr2);
-
-    console.log(color);
   };
 
   const onNameChange = (event) => {
     setWord(event.target.value);
+    console.log("word", word);
   };
 
   return (
@@ -109,7 +92,6 @@ function addPost() {
             values.id = Math.floor(Math.random() * 100);
           }
           resetForm();
-          setShowPicker("");
         }}
       >
         {({
@@ -121,45 +103,43 @@ function addPost() {
           handleSubmit,
           isSubmitting,
         }) => (
-          <Form
-            style={{
-              backgroundColor: color,
-            }}
-          >
+          <Form>
             <Form.Item label="Word">
               <Select
                 mode="multiple"
                 style={{ width: "50%" }}
-                dropdownRender={(menu) => (
-                  <div>
-                    {menu}
-                    <Divider style={{ margin: "4px 0" }}></Divider>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "nowrap",
-                        padding: 8,
-                      }}
-                    ></div>
-                    <Input
-                      style={{ flex: "auto" }}
-                      name="word"
-                      value={word}
-                      onChange={onNameChange}
-                    ></Input>
-                    <a
-                      style={{
-                        flex: "none",
-                        padding: "8px",
-                        display: "block",
-                        cursor: "pointer",
-                      }}
-                      onClick={addItemFunction}
-                    >
-                      <PlusOutlined /> Add item
-                    </a>
-                  </div>
-                )}
+                dropdownRender={(menu) => {
+                  return (
+                    <div>
+                      {menu}
+                      <Divider style={{ margin: "4px 0" }}></Divider>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "nowrap",
+                          padding: 8,
+                        }}
+                      ></div>
+                      <Input
+                        style={{ flex: "auto" }}
+                        name="word"
+                        value={word}
+                        onChange={onNameChange}
+                      ></Input>
+                      <a
+                        style={{
+                          flex: "none",
+                          padding: "8px",
+                          display: "block",
+                          cursor: "pointer",
+                        }}
+                        onClick={addItemFunction}
+                      >
+                        <PlusOutlined /> Add item
+                      </a>
+                    </div>
+                  );
+                }}
               >
                 {allWord.map((item) => (
                   <Option key={item}>{item}</Option>
@@ -202,15 +182,19 @@ function addPost() {
               size="small"
               dataSource={colorPalet}
               renderItem={(item) => {
+                const control = color.includes(item);
+
                 return (
                   <a href="#" onClick={() => colorSelect(item)}>
                     <List.Item style={{ backgroundColor: item }}>
+                      {control && <CheckOutlined />}
                       {item}
                     </List.Item>
                   </a>
                 );
               }}
             />
+
             <Form.Item label="Button">
               <Button
                 onClick={handleSubmit}
@@ -218,6 +202,9 @@ function addPost() {
               >
                 Button
               </Button>
+            </Form.Item>
+            <Form.Item>
+              <a href="/listPage">List Page</a>
             </Form.Item>
           </Form>
         )}
@@ -227,77 +214,3 @@ function addPost() {
 }
 
 export default addPost;
-{
-  /* <Form.Item label="Color">
-              <Button
-                onClick={() => setShowPicker((showPicker) => !showPicker)}
-              >
-                {showPicker ? "close" : "Show"}
-              </Button>
-              {showPicker && (
-                <SwatchesPicker
-                  name="color"
-                  value={values.color}
-                  onChange={(updateColor) => setColor(updateColor.hex)}
-                />
-              )}
-            </Form.Item> */
-}
-{
-  /* <Form.Item>
-              {allWord.map((item, index) => {
-                return (
-                  <>
-                    {item}
-                    <SwatchesPicker
-                      name="color"
-                      value={values.color}
-                      onChange={(updateColor) => setColor(updateColor.hex)}
-                    />
-                  </>
-                );
-              })}
-            </Form.Item> */
-}
-
-{
-  /* <Form.Item label="color">
-              {allWord?.map((color) => {
-                return (
-                  <div>
-                    <Button
-                      style={{ backgroundColor: colorPalet[1] }}
-                      onClick={addColor}
-                    >
-                      Button
-                    </Button>
-                  </div>
-                );
-              })}
-            </Form.Item> */
-}
-
-{
-  /* <List size="large">
-              <a href="#">
-                <List.Item
-                  style={{ backgroundColor: colorPalet[0] }}
-                ></List.Item>
-              </a>
-              <a href="#">
-                <List.Item
-                  style={{ backgroundColor: colorPalet[1] }}
-                ></List.Item>
-              </a>
-              <a href="#">
-                <List.Item
-                  style={{ backgroundColor: colorPalet[2] }}
-                ></List.Item>
-              </a>
-              <a href="#">
-                <List.Item
-                  style={{ backgroundColor: colorPalet[3] }}
-                ></List.Item>
-              </a>
-            </List> */
-}

@@ -1,216 +1,116 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
-import { Formik } from "formik";
-import { Form, Input, Button, Select, Divider, List, Link } from "antd";
-import { SwatchesPicker } from "react-color";
-import { PlusOutlined, CheckOutlined } from "@ant-design/icons";
-import { blue } from "@ant-design/colors";
+import { Form, Input, Button, Select, Divider, Row, Col } from "antd";
+
+const { Option } = Select;
+
+const colorPalet = [
+  ["#D4ECDD", "#345B63", "#152D35", "#112031"],
+  ["#261C2C", "#3E2C41", "#5C527F", "#6E85B2"],
+  ["#E2C2B9", "#BFD8B8", "#E7EAB5", "#F1F7E7"],
+  ["#FCF0C8", "#FACE7F", "#911F27", "#630A10"],
+  ["#420516", "#7D1935", "#B42B51", "#E63E6D"],
+];
 
 function addPost() {
-  const [color, setColor] = useState([]);
-  const { Option } = Select;
-  const [allWord, setAllWord] = useState([]);
-  const [word, setWord] = useState();
-  const [urlSize, setUrlSize] = useState("");
-  const [allUrl, setAllUrl] = useState([]);
-  const [colorPalet, setColorPalet] = useState([
-    "#B98B73 ",
-    "#CB997E",
-    "#DDBEA9",
-    "#FFE8D6",
-    "#D4C7B0 ",
-    "#B7B7A4",
-    "#A5A58D",
-    "#6B705C",
-    "#3F4238",
-  ]);
+  const onFinish = (values, resetForm) => {
+    let postArr = localStorage.getItem("words");
+    postArr = JSON.parse(postArr);
 
-  const addUrl = () => {
-    for (let i = 0; i <= 9; i += 0.1) {
-      const arr6 = [];
-      arr.push(i);
-    }
-    setUrlSize(arr6);
-  };
-
-  const addItemFunction = () => {
-    const newArr = [...allWord];
-    newArr.push(word);
-    setAllWord(newArr);
-    setWord("");
-  };
-
-  const colorSelect = (item) => {
-    const newarr2 = [...color];
-
-    const index = newarr2.indexOf(item);
-    console.log(index);
-
-    if (index !== -1) {
-      newarr2.splice(index, 1);
+    if (postArr) {
+      let arr = [...postArr];
+      values.id = Math.floor(Math.random() * 100);
+      arr.push(values);
+      arr = JSON.stringify(arr);
+      localStorage.setItem("words", arr);
+      console.log(values);
     } else {
-      newarr2.push(item);
+      let arr = [];
+      values.id = Math.floor(Math.random() * 100);
+      arr.push(values);
+      arr = JSON.stringify(arr);
+      localStorage.setItem("words", arr);
+      values.id = Math.floor(Math.random() * 100);
     }
-    setColor(newarr2);
-  };
-
-  const onNameChange = (event) => {
-    setWord(event.target.value);
-    console.log("word", word);
+    let val = JSON.parse(localStorage.getItem("words")).message;
+    console.log(val, "val");
   };
 
   return (
     <>
-      <Formik
+      <Form
         initialValues={{
-          words: [],
+          word: [],
           email: "",
           url: "",
           message: "",
           id: "",
-          selectedColor: "",
+          color: "",
         }}
-        onSubmit={(values, { resetForm }) => {
-          let postArr = localStorage.getItem("words");
-          values.selectedColor = color;
-
-          postArr = JSON.parse(postArr);
-          if (postArr) {
-            let arr = [...postArr];
-            values.id = Math.floor(Math.random() * 100);
-            values.words = allWord;
-            arr.push(values);
-            arr = JSON.stringify(arr);
-            localStorage.setItem("words", arr);
-          } else {
-            let arr = [];
-            values.id = Math.floor(Math.random() * 100);
-            values.words = allWord;
-            arr.push(values);
-            arr = JSON.stringify(arr);
-            localStorage.setItem("words", arr);
-            values.id = Math.floor(Math.random() * 100);
-          }
-          resetForm();
-        }}
+        onFinish={onFinish}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-        }) => (
-          <Form>
-            <Form.Item label="Word">
-              <Select
-                mode="multiple"
-                style={{ width: "50%" }}
-                dropdownRender={(menu) => {
-                  return (
-                    <div>
-                      {menu}
-                      <Divider style={{ margin: "4px 0" }}></Divider>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "nowrap",
-                          padding: 8,
-                        }}
-                      ></div>
-                      <Input
-                        style={{ flex: "auto" }}
-                        name="word"
-                        value={word}
-                        onChange={onNameChange}
-                      ></Input>
-                      <a
-                        style={{
-                          flex: "none",
-                          padding: "8px",
-                          display: "block",
-                          cursor: "pointer",
-                        }}
-                        onClick={addItemFunction}
-                      >
-                        <PlusOutlined /> Add item
-                      </a>
-                    </div>
-                  );
-                }}
-              >
-                {allWord.map((item) => (
-                  <Option key={item}>{item}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="URL"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
-            >
-              <Input value={values.url} onChange={handleChange} name="url" />
-            </Form.Item>
-            <Form.Item
-              label="Email"
-              rules={[
-                {
-                  type: "email",
-                  required: true,
-                  message: "Please input your username!",
-                },
-              ]}
-            >
-              <Input
-                value={values.email}
-                onChange={handleChange}
-                name="email"
-              />
-            </Form.Item>
-            <Form.Item label="Message">
-              <Input.TextArea
-                name="message"
-                value={values.message}
-                onChange={handleChange}
-              />
-            </Form.Item>
+        <Form.Item label="Word" name="word">
+          <Select mode="tags" style={{ width: "50%" }}></Select>
+        </Form.Item>
 
-            <List
-              size="small"
-              dataSource={colorPalet}
-              renderItem={(item) => {
-                const control = color.includes(item);
+        <Form.Item
+          label="URL"
+          name="url"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            {
+              type: "email",
+              required: true,
+              message: "Please input your username!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-                return (
-                  <a href="#" onClick={() => colorSelect(item)}>
-                    <List.Item style={{ backgroundColor: item }}>
-                      {control && <CheckOutlined />}
-                      {item}
-                    </List.Item>
-                  </a>
-                );
-              }}
-            />
+        <Form.Item label="Message" name="message">
+          <Input.TextArea />
+        </Form.Item>
 
-            <Form.Item label="Button">
-              <Button
-                onClick={handleSubmit}
-                disabled={!(values.email && values.message && values.url)}
-              >
-                Button
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <a href="/listPage">List Page</a>
-            </Form.Item>
-          </Form>
-        )}
-      </Formik>
+        <Form.Item label="Color" name="color">
+          <Select>
+            {colorPalet.map((palete, index) => {
+              return (
+                <Option value={palete}>
+                  {palete.map((item) => {
+                    return (
+                      <>
+                        <Row gutter={[8, 16]}>
+                          <Col span={24} style={{ backgroundColor: item }}>
+                            {item}
+                          </Col>
+                        </Row>
+                      </>
+                    );
+                  })}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+
+        <Form.Item>
+          <a href="/listPage">List Page</a>
+        </Form.Item>
+      </Form>
     </>
   );
 }
-
 export default addPost;

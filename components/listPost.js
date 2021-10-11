@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, Space } from "antd";
-import AddPost from "./addPost";
-import { List } from "rc-field-form";
+import { Card, Space, Button } from "antd";
 
 export default function ListPost() {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [colorSelect, setColorSelect] = useState();
 
   useEffect(() => {
     fetcher().then(() => setLoading(false));
@@ -14,22 +13,53 @@ export default function ListPost() {
   const fetcher = async () => {
     let posts = localStorage.getItem("words");
     posts = JSON.parse(posts);
+
+    setColorSelect(posts[posts.length - 1].color);
     setLists(posts);
   };
 
-  console.log(lists);
-  return (
+  return loading ? (
+    <div>Loading</div>
+  ) : (
     <Space>
       <div>
-        {lists?.map((list) => {
-          return (
-            <div>
-              <Card title={list.message} bordered={false}>
-                <p>{list.words}</p>
-              </Card>
-            </div>
-          );
-        })}
+        <Card
+          style={{
+            fontSize: Math.floor(Math.random() * 90) - 0.1,
+          }}
+          title={lists[lists.length - 1]?.message}
+          bordered={false}
+        >
+          <p
+            style={{
+              color: "#acb",
+              fontSize: Math.floor(Math.random() * 90) - 0.1,
+            }}
+          >
+            {lists.map((item, index) => {
+              return (
+                <div>
+                  {item.word.map((item) => {
+                    return (
+                      <div
+                        style={{
+                          color:
+                            colorSelect[
+                              Math.floor(Math.random() * colorSelect.length)
+                            ],
+
+                          fontSize: Math.floor(Math.random() * 90) - 0.1,
+                        }}
+                      >
+                        {item}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </p>
+        </Card>
       </div>
     </Space>
   );

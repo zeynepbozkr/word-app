@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Card, Space, Button } from "antd";
+import styles from "../styles/Home.module.css";
+
+import { Card, Layout, Row, Col } from "antd";
+const { Header, Content, Footer, Sider } = Layout;
 
 export default function ListPost() {
   const [lists, setLists] = useState([]);
@@ -13,7 +16,7 @@ export default function ListPost() {
   const fetcher = async () => {
     let posts = localStorage.getItem("words");
     posts = JSON.parse(posts);
-
+    console.log(posts, "PPPPPPP");
     setColorSelect(posts[posts.length - 1].color);
     setLists(posts);
   };
@@ -21,14 +24,33 @@ export default function ListPost() {
   return loading ? (
     <div>Loading</div>
   ) : (
-    <Space>
-      <div>
+    <div className={styles.ListColor}>
+      <Col span={24} style={{ padding: "20px 100px 10px 100px " }}>
         <Card
           style={{
-            fontSize: Math.floor(Math.random() * 90) - 0.1,
+            marginBottom: "10px",
+            backgroundColor: "#F0F2F0",
+            textAlign: "center",
+            border: "1px solid white",
+            padding: "50px",
           }}
-          title={lists[lists.length - 1]?.message}
-          bordered={false}
+        >
+          <div style={{ fontSize: "3rem" }}>
+            {lists[lists.length - 1]?.message}
+          </div>
+        </Card>
+      </Col>
+
+      <Col span={24} style={{ padding: "40px 300px 150px 300px " }}>
+        <Card
+          style={{
+            backgroundColor: "#F0F2F0",
+            textAlign: "center",
+            border: "1px solid white",
+            borderRadius: "1px",
+            height: "450px",
+            overflow: "scroll",
+          }}
         >
           <p
             style={{
@@ -44,9 +66,11 @@ export default function ListPost() {
                       <div
                         style={{
                           color:
-                            colorSelect[
-                              Math.floor(Math.random() * colorSelect.length)
-                            ],
+                            colorSelect.length === 0
+                              ? "red"
+                              : colorSelect[
+                                  Math.floor(Math.random() * colorSelect.length)
+                                ],
 
                           fontSize: Math.floor(Math.random() * 90) - 0.1,
                         }}
@@ -60,7 +84,7 @@ export default function ListPost() {
             })}
           </p>
         </Card>
-      </div>
-    </Space>
+      </Col>
+    </div>
   );
 }
